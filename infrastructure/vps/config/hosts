@@ -1,0 +1,45 @@
+# Tiation VPS Infrastructure Host Definitions
+# This file can be appended to /etc/hosts for local DNS resolution
+# Format: public_ip:zerotier_ip:ssh_port hostname aliases
+
+# ZeroTier Network Gateway Server
+93.127.167.157:172.22.248.1:22    zerotier-gw.tiation.net zerotier-gw tiation-gateway
+
+# GitLab CI/CD Server  
+149.28.135.83:172.22.248.10:22    gitlab.sxc.codes gitlab-ci tiation-gitlab
+
+# Grafana Monitoring Server
+149.28.135.84:172.22.248.20:22    grafana.sxc.codes grafana-mon tiation-grafana
+
+# Docker Registry Server
+149.28.135.85:172.22.248.30:22    docker.sxc.codes docker-reg tiation-docker
+
+# Helm Charts / Kubernetes Server
+149.28.135.86:172.22.248.40:22    helm.sxc.codes helm-k8s tiation-helm
+
+# ZeroTier Network Information
+# Main Network ID: [TO BE CONFIGURED]
+# Dev Network ID:  [TO BE CONFIGURED]
+# Staging Network: [TO BE CONFIGURED]
+# Production Network: [TO BE CONFIGURED]
+
+# Local development aliases
+127.0.0.1         tiation-local-dev
+127.0.0.1         tiation-local-api
+127.0.0.1         tiation-local-web
+
+# Load balancer / Reverse proxy entries (if needed)
+# 93.127.167.157    api.tiation.net
+# 93.127.167.157    app.tiation.net
+# 93.127.167.157    cdn.tiation.net
+
+# Internal service discovery (Docker Swarm / Kubernetes)
+# These would be managed by your orchestrator, but can be useful for testing
+# 10.0.0.10         tiation-db-primary
+# 10.0.0.11         tiation-db-replica
+# 10.0.0.20         tiation-redis-primary
+# 10.0.0.21         tiation-redis-replica
+
+# Backup and staging servers (if available)
+# 149.28.135.87     staging.sxc.codes staging-tiation
+# 149.28.135.88     backup.sxc.codes backup-tiation

@@ -1,0 +1,92 @@
+# Tiation VPS Infrastructure SSH Configuration
+# Place this in ~/.ssh/config or include from main SSH config
+
+# Global SSH settings
+Host *
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ConnectTimeout 10
+    TCPKeepAlive yes
+    ControlMaster auto
+    ControlPath ~/.ssh/control-%r@%h:%p
+    ControlPersist 5m
+    ForwardAgent no
+    HashKnownHosts yes
+    IdentitiesOnly yes
+    StrictHostKeyChecking yes
+    UserKnownHostsFile ~/.ssh/known_hosts
+
+# OpenVPN Gateway Server
+Host openvpn openvpn.tiation.net
+    HostName 93.127.167.157
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_openvpn_ed25519
+    ForwardAgent yes
+    # Gateway server - allow agent forwarding for jump connections
+
+# GitLab CI/CD Server
+Host gitlab gitlab.sxc.codes
+    HostName 149.28.135.83
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_gitlab_ed25519
+    ProxyJump openvpn.tiation.net
+    LocalForward 8080 localhost:80
+    LocalForward 8443 localhost:443
+
+# Grafana Monitoring Server
+Host grafana grafana.sxc.codes
+    HostName 149.28.135.84
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_grafana_ed25519
+    ProxyJump openvpn.tiation.net
+    LocalForward 3000 localhost:3000
+    LocalForward 9090 localhost:9090
+
+# Docker Registry Server
+Host docker docker.sxc.codes
+    HostName 149.28.135.85
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_docker_ed25519
+    ProxyJump openvpn.tiation.net
+    LocalForward 5000 localhost:5000
+
+# Helm Charts / Kubernetes Server
+Host helm helm.sxc.codes
+    HostName 149.28.135.86
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_helm_ed25519
+    ProxyJump openvpn.tiation.net
+    LocalForward 6443 localhost:6443
+    LocalForward 8001 localhost:8001
+
+# Development aliases for Tailscale connections (if available)
+Host openvpn-ts
+    HostName 100.90.84.68
+    User root
+    Port 22
+    IdentityFile ~/.ssh/tiation_openvpn_ed25519
+    # Direct Tailscale connection - no proxy needed
+
+# Quick connection aliases
+Host all-vps
+    # This is a placeholder for scripts that connect to all VPS instances
+    # Use with connect.sh script: ./connect.sh all-vps
+
+# SSH Key generation commands:
+# ssh-keygen -t ed25519 -f ~/.ssh/tiation_openvpn_ed25519 -C "openvpn@tiation.net"
+# ssh-keygen -t ed25519 -f ~/.ssh/tiation_gitlab_ed25519 -C "gitlab@sxc.codes"  
+# ssh-keygen -t ed25519 -f ~/.ssh/tiation_grafana_ed25519 -C "grafana@sxc.codes"
+# ssh-keygen -t ed25519 -f ~/.ssh/tiation_docker_ed25519 -C "docker@sxc.codes"
+# ssh-keygen -t ed25519 -f ~/.ssh/tiation_helm_ed25519 -C "helm@sxc.codes"
+
+# SSH Key deployment commands:
+# ssh-copy-id -i ~/.ssh/tiation_openvpn_ed25519.pub root@93.127.167.157
+# ssh-copy-id -i ~/.ssh/tiation_gitlab_ed25519.pub root@149.28.135.83
+# ssh-copy-id -i ~/.ssh/tiation_grafana_ed25519.pub root@149.28.135.84
+# ssh-copy-id -i ~/.ssh/tiation_docker_ed25519.pub root@149.28.135.85
+# ssh-copy-id -i ~/.ssh/tiation_helm_ed25519.pub root@149.28.135.86
